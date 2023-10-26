@@ -30,10 +30,14 @@ public class Buffer3 implements IBuffer {
         System.out.println("Buffer state = " + buffer);
     }
 
-    public synchronized void consume(Person person) throws InterruptedException {
+    public synchronized void consume(Person person)  {
 
         while (buffer == 0){
-            wait();
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
 
@@ -51,10 +55,14 @@ public class Buffer3 implements IBuffer {
         notifyAll();
     }
 
-    public synchronized void produce(Person person) throws InterruptedException{
+    public synchronized void produce(Person person){
 
         while (buffer == maxBuffer) {
-            wait();
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         long sleepSeconds = getSleepTime();
