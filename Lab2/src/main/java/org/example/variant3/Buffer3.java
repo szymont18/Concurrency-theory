@@ -5,12 +5,13 @@ import org.example.Person;
 
 import java.util.Random;
 
+/**
+ * Many Consumer
+ * Many Producer
+ * Many element Buffer
+ * Deadlock - Free
+ */
 public class Buffer3 implements IBuffer {
-    /*
-   buffer = 0 means that there is NOTHING to consume;
-   buffer > 0 means that there is SOMETHING to consume
-   buffer = MAX_BUFFER means there is no place for new Item
-    */
     private int buffer;
     private final int maxBuffer;
     private final Random randomSleep = new Random();

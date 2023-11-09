@@ -5,6 +5,11 @@ import org.example.Person;
 
 import java.util.Random;
 
+/**
+ * One Consumer
+ * One Producer
+ * One element Buffer
+ */
 public class Buffer1 implements IBuffer {
     /*
     buffer = 0 means that there is NOTHING to consume;

@@ -5,11 +5,11 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MultiElementBuffer2 implements IBuffer {
-    /*
-    buffer = 0 means that there is NOTHING to consume;
-    buffer = 1 means that there is SOMETHING to consume
-     */
+/**
+ * implementation NPMKWB - solution for single-item chunks using Lock and Condition,
+ */
+public class MultiElementBuffer implements IBuffer {
+   
     private int buffer;
     private final int maxBuffer;
 
@@ -18,7 +18,7 @@ public class MultiElementBuffer2 implements IBuffer {
     private final Condition producerCondition;
 
 
-    public MultiElementBuffer2(int maxBuffer){
+    public MultiElementBuffer(int maxBuffer){
         this.buffer = 0;
         this.maxBuffer = maxBuffer;
 

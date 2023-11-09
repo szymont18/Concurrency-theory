@@ -35,7 +35,7 @@ public class Consumer extends Thread implements Person {
     public int getRandomInt() {
 
 //        return this.random.nextInt(maxRequest) + 1;
-        if (this.id == 1) return 1;
+        if (this.id == 3) return maxRequest;
 
         return maxRequest;
 

@@ -5,7 +5,9 @@ public class Main {
         int noConsumer = 4;
         int noProducer = 3;
 
-        RandomBuffer buffer = new RandomBuffer(20);
+//        RandomBuffer buffer = new RandomBuffer(20);
+
+        StarvationFreeBuffer buffer = new StarvationFreeBuffer(20);
 
         Consumer[] consumers = new Consumer[noConsumer];
 
@@ -25,7 +27,7 @@ public class Main {
                 System.out.println("Consumer " + (i + 1) + " consumed " + consumers[i].getNoConsumed() + " times");
             }
             System.out.println();
-
+//
         }
 
 
