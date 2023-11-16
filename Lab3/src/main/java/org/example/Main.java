@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.conditions2.RandomBuffer;
+import org.example.conditions4.BufferHasWaiters;
 import org.example.conditions4.StarvationFreeBuffer;
 
 public class Main {
@@ -10,10 +11,12 @@ public class Main {
         int noRound = 10;
         int timeBetweenRounds = 5000; // milliseconds
 
-//        RandomBuffer buffer = new RandomBuffer(50);
         // Consumer 1 is one who has to starve.
 
+        // Choose buffer type:
+//        RandomBuffer buffer = new RandomBuffer(50);
         StarvationFreeBuffer buffer = new StarvationFreeBuffer(50);
+//        BufferHasWaiters buffer = new BufferHasWaiters(50);
 
         Consumer[] consumers = new Consumer[noConsumer];
 
@@ -41,10 +44,6 @@ public class Main {
                 throw new RuntimeException(e);
             }
           }
-
-//
-
-
 
     }
 }

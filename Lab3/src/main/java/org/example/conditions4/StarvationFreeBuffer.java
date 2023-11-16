@@ -9,7 +9,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-// Spróbuj robić sleepami + implementacja z hasWaiters()
 
 /**
  * Implementation of 4 conditions
