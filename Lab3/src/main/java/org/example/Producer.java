@@ -8,7 +8,7 @@ public class Producer extends Thread implements Person {
     private IBuffer buffer1;
 
     private final Random random = new Random();
-    private final int maxRequest = 10;
+    private final int maxRequest = 25;
 
     public Producer(int id, IBuffer buffer1){
         this.id = id;

@@ -1,5 +1,10 @@
-package org.example;
+package org.example.conditions2;
 
+
+import org.example.Consumer;
+import org.example.IBuffer;
+import org.example.Person;
+import org.example.Producer;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

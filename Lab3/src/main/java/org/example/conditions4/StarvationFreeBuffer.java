@@ -1,17 +1,27 @@
-package org.example;
+package org.example.conditions4;
+
+import org.example.Consumer;
+import org.example.IBuffer;
+import org.example.Person;
+import org.example.Producer;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class StarvationFreeBuffer implements IBuffer{
+// Spróbuj robić sleepami + implementacja z hasWaiters()
+
+/**
+ * Implementation of 4 conditions
+ */
+public class StarvationFreeBuffer implements IBuffer {
     private int buffer;
     private final int maxBuffer;
 
-    private final Lock lock;
-    private final Condition consumerCondition;
+    private final ReentrantLock lock;
+    private final Condition otherConsumerCondition;
     private final Condition firstConsumerCondition;
-    private final Condition producerCondition;
+    private final Condition otherProducerCondition;
     private final Condition firstProducerCondition;
 
     boolean waitingProducer;
@@ -21,13 +31,18 @@ public class StarvationFreeBuffer implements IBuffer{
         this.maxBuffer = maxBuffer;
         this.lock = new ReentrantLock();
 
-        this.consumerCondition = lock.newCondition();
+        this.otherConsumerCondition = lock.newCondition();
         this.firstConsumerCondition = lock.newCondition();
-        this.producerCondition = lock.newCondition();
+        this.otherProducerCondition = lock.newCondition();
         this.firstProducerCondition = lock.newCondition();
 
         this.waitingConsumer = false;
         this.waitingProducer = false;
+    }
+
+    public void printBufferState(){
+        System.out.println("Buffer state = " + buffer);
+        System.out.println();
     }
 
     @Override
@@ -37,20 +52,24 @@ public class StarvationFreeBuffer implements IBuffer{
 
 
             while(this.waitingConsumer){
-                this.consumerCondition.await();
+                this.otherConsumerCondition.await();
             }
 
             this.waitingConsumer = true;
 
-            while (buffer - request < 0){
+            while (buffer < request){
                 this.firstConsumerCondition.await();
             }
 
             this.waitingConsumer = false;
 
             buffer -= request;
+            Thread.sleep(0L, 500);
 
-            this.consumerCondition.signal();
+//            System.out.println(person.introduceYourself() + " consumed " + request);
+
+
+            this.otherConsumerCondition.signal();
             this.firstProducerCondition.signal();
 
 
@@ -67,7 +86,7 @@ public class StarvationFreeBuffer implements IBuffer{
             this.lock.lock();
 
             while (this.waitingProducer){ // There is waiting Producer that should be served first
-                this.producerCondition.await();
+                this.otherProducerCondition.await();
             }
 
             this.waitingProducer = true;
@@ -80,8 +99,11 @@ public class StarvationFreeBuffer implements IBuffer{
             this.waitingProducer = false; // Stop waiting
 
             buffer += request;
+            Thread.sleep(0L, 500);
 
-            this.producerCondition.signal();
+//            System.out.println(person.introduceYourself() + " produced " + request);
+
+            this.otherProducerCondition.signal();
             this.firstConsumerCondition.signal();
 
 

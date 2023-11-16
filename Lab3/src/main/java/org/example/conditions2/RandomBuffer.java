@@ -1,4 +1,9 @@
-package org.example;
+package org.example.conditions2;
+
+import org.example.Consumer;
+import org.example.IBuffer;
+import org.example.Person;
+import org.example.Producer;
 
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
@@ -79,7 +84,7 @@ import java.util.concurrent.locks.ReentrantLock;
  C2 is starving
  Process with more-element-request starves more often
  */
-public class RandomBuffer implements  IBuffer{
+public class RandomBuffer implements IBuffer {
     private int buffer;
     private final int maxBuffer;
 
@@ -116,6 +121,8 @@ public class RandomBuffer implements  IBuffer{
 //            System.out.println(person.introduceYourself() + " start consuming " + request);
 
             buffer -= request;
+            Thread.sleep(0L, 500);
+
 //            System.out.println(person.introduceYourself() + " consumed " + request);
 
 //            printBufferState();
@@ -142,6 +149,8 @@ public class RandomBuffer implements  IBuffer{
 
 
             buffer += request;
+            Thread.sleep(0L, 500);
+
 //            System.out.println(person.introduceYourself() + " produced " + request);
 
 //            printBufferState();

@@ -10,7 +10,7 @@ public class Consumer extends Thread implements Person {
     private final Random random = new Random();
     private int noConsumed;
 
-    private final int maxRequest = 10;
+    private final int maxRequest = 25;
 
     public Consumer(int id, IBuffer buffer1){
         this.id = id;
@@ -23,6 +23,7 @@ public class Consumer extends Thread implements Person {
         while(true) {
             buffer1.consume(this, getRandomInt());
             noConsumed++;
+//            System.out.println("Consumer " + id + " consumed " + noConsumed + " times");
         }
 
     }
@@ -34,10 +35,9 @@ public class Consumer extends Thread implements Person {
     @Override
     public int getRandomInt() {
 
-//        return this.random.nextInt(maxRequest) + 1;
-        if (this.id == 3) return maxRequest;
+        if (this.id == 1) return maxRequest;
 
-        return maxRequest;
+        return  1;
 
     }
 
