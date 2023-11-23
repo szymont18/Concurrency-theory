@@ -164,6 +164,11 @@ public class RandomBuffer implements IBuffer {
         }
     }
 
+    @Override
+    public void updateHandledRequest(long time) {
+
+    }
+
 
     @Override
     public void consume(Person person) {

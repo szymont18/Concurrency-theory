@@ -1,11 +1,16 @@
 package org.example;
 
-import org.example.conditions2.RandomBuffer;
-import org.example.conditions4.BufferHasWaiters;
 import org.example.conditions4.StarvationFreeBuffer;
+import org.example.lock3.ThreeLockBuffer;
+import org.example.time.CSVCreator;
+import org.example.time.TimeMeter;
+import org.example.time.TimeStamp;
 
-public class Main {
-    public static void main(String[] args){
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+import java.util.ArrayList;
+import java.util.HashMap;
+/*
         int noConsumer = 4;
         int noProducer = 4;
         int noRound = 10;
@@ -15,8 +20,9 @@ public class Main {
 
         // Choose buffer type:
 //        RandomBuffer buffer = new RandomBuffer(50);
-        StarvationFreeBuffer buffer = new StarvationFreeBuffer(50);
+//        StarvationFreeBuffer buffer = new StarvationFreeBuffer(50);
 //        BufferHasWaiters buffer = new BufferHasWaiters(50);
+        ThreeLockBuffer buffer = new ThreeLockBuffer(50);
 
         Consumer[] consumers = new Consumer[noConsumer];
 
@@ -44,6 +50,48 @@ public class Main {
                 throw new RuntimeException(e);
             }
           }
+        */
 
+public class Main {
+    public static void main(String[] args) {
+        ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+//        System.out.println(threadMXBean.isThreadCpuTimeSupported());
+        System.out.println(threadMXBean.getThreadCpuTime(1));
+
+        int noConsumer = 4;
+        int noProducer = 4;
+        long time = 5L * 1000000000;
+        long stamp = 1L * 1000000000;
+
+        ThreeLockBuffer threeLockBuffer = new ThreeLockBuffer(50);
+        StarvationFreeBuffer starvationFreeBuffer = new StarvationFreeBuffer(50);
+        TimeMeter timeMeter = new TimeMeter(threeLockBuffer, starvationFreeBuffer, noConsumer, noProducer);
+
+        System.out.println("Time test 1...");
+
+
+//        System.out.println(threadMXBean.getThreadCpuTime(Thread.currentThread().getId()));
+
+//        timeMeter.performTimeTests(time, stamp);
+        ArrayList<ArrayList<TimeStamp>> timeResult = timeMeter.getResults();
+
+        System.out.println("Time test 2...");
+        timeMeter.performCPUTests(time, stamp);
+        ArrayList<ArrayList<TimeStamp>> CPUTimeResult = timeMeter.getResults();
+
+        HashMap<String, ArrayList<TimeStamp>> csvConfig = new HashMap<String, ArrayList<TimeStamp>>(){{
+            put("threeLockTime.csv", timeResult.get(0));
+            put("fourConditionsTime.csv", timeResult.get(1));
+            put("threeLockCPU.csv", CPUTimeResult.get(0));
+            put("fourConditionsCPU.csv", CPUTimeResult.get(1));
+        }};
+
+        CSVCreator<TimeStamp> csvCreator = new CSVCreator<>();
+        csvCreator.toCSV(csvConfig);
+
+
+        System.exit(0);
     }
+
+
 }

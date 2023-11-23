@@ -1,4 +1,4 @@
-package org.example.conditions4;
+package org.example.lock3;
 
 import org.example.Consumer;
 import org.example.IBuffer;
@@ -10,41 +10,29 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-
-/**
- * Implementation of 4 conditions
- */
-public class StarvationFreeBuffer implements IBuffer {
+public class ThreeLockBuffer implements IBuffer {
     private int buffer;
     private final int maxBuffer;
 
-    private final ReentrantLock lock;
-    private final Condition otherConsumerCondition;
-    private final Condition firstConsumerCondition;
-    private final Condition otherProducerCondition;
-    private final Condition firstProducerCondition;
+    private final ReentrantLock commonLock;
+    private final ReentrantLock producerLock;
+    private final ReentrantLock consumerLock;
 
-    boolean waitingProducer;
-    boolean waitingConsumer;
+    private final Condition waiting;
+
     private int handledRequest;
     private ArrayList<TimeStamp> handledRequestArray;
 
 
-    public StarvationFreeBuffer(int maxBuffer){
+    public ThreeLockBuffer(int maxBuffer){
         this.maxBuffer = maxBuffer;
-        this.lock = new ReentrantLock();
+        this.consumerLock = new ReentrantLock();
+        this.commonLock = new ReentrantLock();
+        this.producerLock = new ReentrantLock();
 
-        this.otherConsumerCondition = lock.newCondition();
-        this.firstConsumerCondition = lock.newCondition();
-        this.otherProducerCondition = lock.newCondition();
-        this.firstProducerCondition = lock.newCondition();
-
-        this.waitingConsumer = false;
-        this.waitingProducer = false;
-
+        this.waiting = this.commonLock.newCondition();
         handledRequestArray = new ArrayList<TimeStamp>();
         handledRequest = 0;
-
     }
 
     public void printBufferState(){
@@ -55,79 +43,66 @@ public class StarvationFreeBuffer implements IBuffer {
     @Override
     public void consume(Consumer person, int request) {
         try{
-            this.lock.lock();
+            this.consumerLock.lock();
 
+            this.commonLock.lock();
 
-            while(this.waitingConsumer){
-                this.otherConsumerCondition.await();
-            }
-
-            this.waitingConsumer = true;
 
             while (buffer < request){
-                this.firstConsumerCondition.await();
+                this.waiting.await();
             }
 
-            this.waitingConsumer = false;
-
             buffer -= request;
-            Thread.sleep(0L, 100); // 500 before
+            Thread.sleep(0L, 100);
 
 //            System.out.println(person.introduceYourself() + " consumed " + request);
 
-
-            this.otherConsumerCondition.signal();
-            this.firstProducerCondition.signal();
+            this.waiting.signal();
 
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
             handledRequest++;
-            this.lock.unlock();
+            this.commonLock.unlock();
+            this.consumerLock.unlock();
         }
     }
 
     @Override
     public void produce(Producer person, int request) {
         try {
-            this.lock.lock();
+            this.producerLock.lock();
 
-            while (this.waitingProducer){ // There is waiting Producer that should be served first
-                this.otherProducerCondition.await();
-            }
-
-            this.waitingProducer = true;
+            this.commonLock.lock();
 
             while(buffer + request > maxBuffer){
 
-                this.firstProducerCondition.await();
+                this.waiting.await();
             }
 
-            this.waitingProducer = false; // Stop waiting
-
             buffer += request;
-            Thread.sleep(0L, 100); // 500 before
+            Thread.sleep(0L, 100);
 
 //            System.out.println(person.introduceYourself() + " produced " + request);
 
-            this.otherProducerCondition.signal();
-            this.firstConsumerCondition.signal();
+            this.waiting.signal();
 
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
             handledRequest++;
-            this.lock.unlock();
+            this.commonLock.unlock();
+            this.producerLock.unlock();
         }
-
 
     }
 
     public void updateHandledRequest(long time) {
         handledRequestArray.add(new TimeStamp((float) time / 1000000000, this.handledRequest));
     }
+
     public ArrayList<TimeStamp> getHandledRequestArray(){
         return handledRequestArray;
     }
@@ -146,4 +121,9 @@ public class StarvationFreeBuffer implements IBuffer {
     public void produce(Person person) {
 
     }
+
+
+
 }
+
+
