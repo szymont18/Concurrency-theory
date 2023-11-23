@@ -71,7 +71,7 @@ public class StarvationFreeBuffer implements IBuffer {
             this.waitingConsumer = false;
 
             buffer -= request;
-            Thread.sleep(0L, 100); // 500 before
+//            Thread.sleep(0L, 100); // 500 before
 
 //            System.out.println(person.introduceYourself() + " consumed " + request);
 
@@ -107,7 +107,7 @@ public class StarvationFreeBuffer implements IBuffer {
             this.waitingProducer = false; // Stop waiting
 
             buffer += request;
-            Thread.sleep(0L, 100); // 500 before
+//            Thread.sleep(0L, 100); // 500 before
 
 //            System.out.println(person.introduceYourself() + " produced " + request);
 
@@ -126,7 +126,7 @@ public class StarvationFreeBuffer implements IBuffer {
     }
 
     public void updateHandledRequest(long time) {
-        handledRequestArray.add(new TimeStamp((float) time / 1000000000, this.handledRequest));
+        handledRequestArray.add(new TimeStamp((float) time / 1000000000L, this.handledRequest));
     }
     public ArrayList<TimeStamp> getHandledRequestArray(){
         return handledRequestArray;
@@ -135,6 +135,10 @@ public class StarvationFreeBuffer implements IBuffer {
     public void resetHandledRequest(){
         handledRequest = 0;
         handledRequestArray.clear();
+    }
+
+    public int getHandledRequest(){
+        return handledRequest;
     }
 
     @Override

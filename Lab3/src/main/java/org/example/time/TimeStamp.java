@@ -15,4 +15,8 @@ public class TimeStamp {
     public String toString() {
         return time + "," + elements;
     }
+
+    public float getVelocity(){
+        return elements/time;
+    }
 }

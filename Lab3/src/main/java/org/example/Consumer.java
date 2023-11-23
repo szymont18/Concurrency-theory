@@ -33,6 +33,7 @@ public class Consumer extends Thread implements Person {
         while(running) {
             buffer1.consume(this, getRandomInt());
             noConsumed++;
+
         }
 
     }

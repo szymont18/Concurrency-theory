@@ -53,7 +53,7 @@ public class ThreeLockBuffer implements IBuffer {
             }
 
             buffer -= request;
-            Thread.sleep(0L, 100);
+//            Thread.sleep(0L, 100);
 
 //            System.out.println(person.introduceYourself() + " consumed " + request);
 
@@ -82,7 +82,7 @@ public class ThreeLockBuffer implements IBuffer {
             }
 
             buffer += request;
-            Thread.sleep(0L, 100);
+//            Thread.sleep(0L, 100);
 
 //            System.out.println(person.introduceYourself() + " produced " + request);
 
@@ -100,7 +100,7 @@ public class ThreeLockBuffer implements IBuffer {
     }
 
     public void updateHandledRequest(long time) {
-        handledRequestArray.add(new TimeStamp((float) time / 1000000000, this.handledRequest));
+        handledRequestArray.add(new TimeStamp((float) time / 1000000000L, this.handledRequest));
     }
 
     public ArrayList<TimeStamp> getHandledRequestArray(){

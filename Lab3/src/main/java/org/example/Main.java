@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.conditions2.RandomBuffer;
 import org.example.conditions4.StarvationFreeBuffer;
 import org.example.lock3.ThreeLockBuffer;
 import org.example.time.CSVCreator;
@@ -53,14 +54,14 @@ import java.util.HashMap;
         */
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 //        System.out.println(threadMXBean.isThreadCpuTimeSupported());
-        System.out.println(threadMXBean.getThreadCpuTime(1));
+
 
         int noConsumer = 4;
         int noProducer = 4;
-        long time = 5L * 1000000000;
+        long time = 10L * 1000000000;
         long stamp = 1L * 1000000000;
 
         ThreeLockBuffer threeLockBuffer = new ThreeLockBuffer(50);
@@ -69,15 +70,18 @@ public class Main {
 
         System.out.println("Time test 1...");
 
-
-//        System.out.println(threadMXBean.getThreadCpuTime(Thread.currentThread().getId()));
-
-//        timeMeter.performTimeTests(time, stamp);
+        timeMeter.performTimeTests(time, stamp);
         ArrayList<ArrayList<TimeStamp>> timeResult = timeMeter.getResults();
+        System.out.println("Three Lock:" + timeResult.get(0).get(timeResult.get(0).size() - 1).getVelocity());
+        System.out.println("Four Condition:" + timeResult.get(1).get(timeResult.get(1).size()- 1).getVelocity());
+
 
         System.out.println("Time test 2...");
-        timeMeter.performCPUTests(time, stamp);
+        timeMeter.performCPUTests(time*10, stamp*10);
         ArrayList<ArrayList<TimeStamp>> CPUTimeResult = timeMeter.getResults();
+
+        System.out.println("Three Lock:" + CPUTimeResult.get(0).get(CPUTimeResult.get(0).size() - 1).getVelocity());
+        System.out.println("Four Condition:" + CPUTimeResult.get(1).get(CPUTimeResult.get(1).size() - 1).getVelocity());
 
         HashMap<String, ArrayList<TimeStamp>> csvConfig = new HashMap<String, ArrayList<TimeStamp>>(){{
             put("threeLockTime.csv", timeResult.get(0));
