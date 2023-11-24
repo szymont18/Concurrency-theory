@@ -11,7 +11,7 @@ public class Consumer extends Thread implements Person {
     private IBuffer buffer1;
     private int id;
     private long threadID;
-    private final Random random = new Random();
+    private final Random random = new Random(Main.seed);
     private int noConsumed;
 
     private ArrayList<TimeStamp> timeStamps;

@@ -54,6 +54,8 @@ import java.util.HashMap;
         */
 
 public class Main {
+    static long seed = 25L;
+
     public static void main(String[] args) throws InterruptedException {
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 //        System.out.println(threadMXBean.isThreadCpuTimeSupported());
@@ -61,33 +63,48 @@ public class Main {
 
         int noConsumer = 4;
         int noProducer = 4;
-        long time = 10L * 1000000000;
+        long time = 100L * 1000000000;
         long stamp = 1L * 1000000000;
 
         ThreeLockBuffer threeLockBuffer = new ThreeLockBuffer(50);
         StarvationFreeBuffer starvationFreeBuffer = new StarvationFreeBuffer(50);
-        TimeMeter timeMeter = new TimeMeter(threeLockBuffer, starvationFreeBuffer, noConsumer, noProducer);
-
-        System.out.println("Time test 1...");
-
-        timeMeter.performTimeTests(time, stamp);
-        ArrayList<ArrayList<TimeStamp>> timeResult = timeMeter.getResults();
-        System.out.println("Three Lock:" + timeResult.get(0).get(timeResult.get(0).size() - 1).getVelocity());
-        System.out.println("Four Condition:" + timeResult.get(1).get(timeResult.get(1).size()- 1).getVelocity());
+        RandomBuffer randomBuffer = new RandomBuffer(50);
+        TimeMeter timeMeter = new TimeMeter(noConsumer, noProducer);
 
 
-        System.out.println("Time test 2...");
-        timeMeter.performCPUTests(time*10, stamp*10);
-        ArrayList<ArrayList<TimeStamp>> CPUTimeResult = timeMeter.getResults();
+        System.out.println("Three Lock Tests...");
 
-        System.out.println("Three Lock:" + CPUTimeResult.get(0).get(CPUTimeResult.get(0).size() - 1).getVelocity());
-        System.out.println("Four Condition:" + CPUTimeResult.get(1).get(CPUTimeResult.get(1).size() - 1).getVelocity());
+        ArrayList<TimeStamp>threeLockResult = timeMeter.performTimeTests(threeLockBuffer,time, stamp);
+        ArrayList<TimeStamp>threeLockCPU = timeMeter.performCPUTests(threeLockBuffer,time, stamp);
+
+        System.out.println("Three Lock:" + threeLockResult.get(threeLockResult.size() - 1).getVelocity() );
+        System.out.println("Three Lock CPU:" + threeLockCPU.get(threeLockCPU.size() - 1).getVelocity());
+
+        System.out.println("Two Condition Test...");
+
+        ArrayList<TimeStamp> twoConditionResult = timeMeter.performTimeTests(randomBuffer,time, stamp);
+        ArrayList<TimeStamp> twoConditionCPU = timeMeter.performCPUTests(randomBuffer,time, stamp);
+
+        System.out.println("Two Condition:" + twoConditionResult.get(twoConditionResult.size() - 1).getVelocity() );
+        System.out.println("Two Condition CPU:" + twoConditionCPU.get(twoConditionCPU.size() - 1).getVelocity());
+
+        System.out.println("Four Condition Test...");
+
+        ArrayList<TimeStamp> fourConditionResult = timeMeter.performTimeTests(starvationFreeBuffer,time, stamp);
+        ArrayList<TimeStamp>fourConditionCPU = timeMeter.performCPUTests(starvationFreeBuffer,time, stamp);
+
+        System.out.println("Four Condition:" + fourConditionResult.get(fourConditionResult.size() - 1).getVelocity() );
+        System.out.println("Four Condition CPU:" + fourConditionCPU.get(fourConditionCPU.size() - 1).getVelocity());
+
+
 
         HashMap<String, ArrayList<TimeStamp>> csvConfig = new HashMap<String, ArrayList<TimeStamp>>(){{
-            put("threeLockTime.csv", timeResult.get(0));
-            put("fourConditionsTime.csv", timeResult.get(1));
-            put("threeLockCPU.csv", CPUTimeResult.get(0));
-            put("fourConditionsCPU.csv", CPUTimeResult.get(1));
+            put("twoCondition.csv", twoConditionResult);
+            put("twoConditionCPU.csv", twoConditionCPU);
+            put("fourConditionsTime.csv", fourConditionResult);
+            put("fourConditionsCPU.csv", fourConditionCPU);
+            put("threeLockTime.csv", threeLockResult);
+            put("threeLockCPU.csv", threeLockCPU);
         }};
 
         CSVCreator<TimeStamp> csvCreator = new CSVCreator<>();

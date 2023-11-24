@@ -53,6 +53,8 @@ public class ThreeLockBuffer implements IBuffer {
             }
 
             buffer -= request;
+            handledRequest++;
+
 //            Thread.sleep(0L, 100);
 
 //            System.out.println(person.introduceYourself() + " consumed " + request);
@@ -63,7 +65,6 @@ public class ThreeLockBuffer implements IBuffer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            handledRequest++;
             this.commonLock.unlock();
             this.consumerLock.unlock();
         }
@@ -82,6 +83,7 @@ public class ThreeLockBuffer implements IBuffer {
             }
 
             buffer += request;
+            handledRequest++;
 //            Thread.sleep(0L, 100);
 
 //            System.out.println(person.introduceYourself() + " produced " + request);
@@ -92,7 +94,7 @@ public class ThreeLockBuffer implements IBuffer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            handledRequest++;
+
             this.commonLock.unlock();
             this.producerLock.unlock();
         }

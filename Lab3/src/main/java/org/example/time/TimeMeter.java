@@ -3,45 +3,32 @@ package org.example.time;
 import org.example.Consumer;
 import org.example.IBuffer;
 import org.example.Producer;
-import org.example.lock3.ThreeLockBuffer;
 
-import java.beans.Customizer;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Optional;
 
 public class TimeMeter {
 
-    private IBuffer buffer1;
-    private IBuffer buffer2;
 
     private final int noConsumer;
     private final int noProducer;
 
     private ArrayList<Consumer> consumers1;
-    private ArrayList<Consumer> consumers2;
+
     private ArrayList<Producer> producers1;
-    private ArrayList<Producer> producers2;
+
 
     private final ThreadMXBean threadMXBean;
-    private boolean firstTurn;
+
     private boolean CPUTime;
 
-    public TimeMeter(IBuffer buffer1, IBuffer buffer2, int noConsumer, int noProducer){
-        this.buffer1 = buffer1;
-        this.buffer2 = buffer2;
+    public TimeMeter(int noConsumer, int noProducer){
 
         this.noConsumer = noConsumer;
         this.noProducer = noProducer;
-
         consumers1 = new ArrayList<>();
-        consumers2 = new ArrayList<>();
         producers1 = new ArrayList<>();
-        producers2 = new ArrayList<>();
 
         this.threadMXBean = ManagementFactory.getThreadMXBean();
         this.threadMXBean.setThreadCpuTimeEnabled(true);
@@ -49,28 +36,24 @@ public class TimeMeter {
     }
 
 
-    public void performTimeTests(long totalTime, long step){
+    public ArrayList<TimeStamp> performTimeTests(IBuffer buffer, long totalTime, long step){
         this.CPUTime = false;
-        this.firstTurn = true;
 
-        buffer1.resetHandledRequest();
-        performOneGroupTest(this.buffer1, totalTime, step);
+        buffer.resetHandledRequest();
+        performOneGroupTest(buffer, totalTime, step);
 
-        this.firstTurn = false;
-        buffer2.resetHandledRequest();
-        performOneGroupTest(this.buffer2, totalTime, step);
+        return getResults(buffer);
+
     }
 
-    public void performCPUTests(long totalTime, long step){
+    public ArrayList<TimeStamp> performCPUTests(IBuffer buffer, long totalTime, long step){
         this.CPUTime = true;
-        this.firstTurn = true;
 
-        buffer1.resetHandledRequest();
-        performOneGroupTest(this.buffer1, totalTime, step);
+        buffer.resetHandledRequest();
+        performOneGroupTest(buffer, totalTime, step);
 
-        this.firstTurn = false;
-        buffer2.resetHandledRequest();
-        performOneGroupTest(this.buffer2, totalTime, step);
+        return getResults(buffer);
+
     }
 
 
@@ -166,25 +149,14 @@ public class TimeMeter {
     }
 
     private void savePerformance(ArrayList<Consumer> consumers, ArrayList<Producer> producers){
-        if (this.firstTurn){
-            consumers1 = consumers;
-            producers1 = producers;
-        }
-        else{
-            consumers2 = consumers;
-            producers2 = producers;
-        }
+
+        consumers1 = consumers;
+        producers1 = producers;
+
     }
 
-    public ArrayList<ArrayList<TimeStamp>> getResults(){
-        ArrayList<ArrayList<TimeStamp>> result = new ArrayList<>();
-
-        ArrayList<TimeStamp> buffer1Result = new ArrayList<>(buffer1.getHandledRequestArray());
-        ArrayList<TimeStamp> buffer2Result = new ArrayList<>(buffer2.getHandledRequestArray());
-
-        result.add(buffer1Result);
-        result.add(buffer2Result);
-        return result;
+    private ArrayList<TimeStamp> getResults(IBuffer buffer){
+        return new ArrayList<TimeStamp>(buffer.getHandledRequestArray());
     }
 
 }

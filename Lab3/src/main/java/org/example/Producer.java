@@ -12,7 +12,7 @@ public class Producer extends Thread implements Person {
     private long threadID;
 
 
-    private final Random random = new Random();
+    private final Random random = new Random(Main.seed);
     private final int maxRequest = 25;
 
     private int noProduced;

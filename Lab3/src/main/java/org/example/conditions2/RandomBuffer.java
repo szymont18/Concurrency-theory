@@ -4,7 +4,9 @@ import org.example.Consumer;
 import org.example.IBuffer;
 import org.example.Person;
 import org.example.Producer;
+import org.example.time.TimeStamp;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -88,10 +90,12 @@ public class RandomBuffer implements IBuffer {
     private int buffer;
     private final int maxBuffer;
 
-    private final Lock lock;
+    private final ReentrantLock lock;
     private final Condition consumerCondition;
     private final Condition producerCondition;
 
+    private int handledRequest;
+    private ArrayList<TimeStamp> handledRequestArray;
 
     public RandomBuffer(int maxBuffer){
         this.buffer = 0;
@@ -100,6 +104,9 @@ public class RandomBuffer implements IBuffer {
         this.lock = new ReentrantLock();
         this.consumerCondition = lock.newCondition();
         this.producerCondition = lock.newCondition();
+
+        handledRequestArray = new ArrayList<TimeStamp>();
+        handledRequest = 0;
     }
 
 
@@ -114,14 +121,14 @@ public class RandomBuffer implements IBuffer {
         try {
             this.lock.lock();
 
-            while ((buffer - request) < 0) {
+            while (buffer  < request) {
                 this.consumerCondition.await();
             }
 
 //            System.out.println(person.introduceYourself() + " start consuming " + request);
 
             buffer -= request;
-            Thread.sleep(0L, 500);
+//            Thread.sleep(0L, 500);
 
 //            System.out.println(person.introduceYourself() + " consumed " + request);
 
@@ -133,6 +140,7 @@ public class RandomBuffer implements IBuffer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            handledRequest++;
             this.lock.unlock();
         }
     }
@@ -141,7 +149,7 @@ public class RandomBuffer implements IBuffer {
         try {
             this.lock.lock();
 
-            while ((buffer + request) > this.maxBuffer) {
+            while (buffer + request > maxBuffer) {
                 this.producerCondition.await();
             }
 
@@ -149,7 +157,7 @@ public class RandomBuffer implements IBuffer {
 
 
             buffer += request;
-            Thread.sleep(0L, 500);
+//            Thread.sleep(0L, 500);
 
 //            System.out.println(person.introduceYourself() + " produced " + request);
 
@@ -160,15 +168,23 @@ public class RandomBuffer implements IBuffer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }finally {
+            handledRequest++;
             this.lock.unlock();
         }
     }
 
-    @Override
     public void updateHandledRequest(long time) {
-
+        handledRequestArray.add(new TimeStamp((float) time / 1000000000L, this.handledRequest));
     }
 
+    public ArrayList<TimeStamp> getHandledRequestArray(){
+        return handledRequestArray;
+    }
+
+    public void resetHandledRequest(){
+        handledRequest = 0;
+        handledRequestArray.clear();
+    }
 
     @Override
     public void consume(Person person) {
