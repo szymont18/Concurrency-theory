@@ -14,8 +14,6 @@ public class TimeConsumer extends Thread implements Person {
     private int id;
     private int noConsume;
 
-    private long noIteration;
-
     private long time;
     private long cpuTime;
     private Test testType;
@@ -23,6 +21,8 @@ public class TimeConsumer extends Thread implements Person {
     private boolean working;
     private ArrayList<Long> results;
     private ArrayList<Integer> noVal;
+
+    private long elements;
 
     public ArrayList<Double> getResults() {
         ArrayList<Double> meanResults = new ArrayList<>();
@@ -34,17 +34,17 @@ public class TimeConsumer extends Thread implements Person {
         return meanResults;
     }
 
-    public TimeConsumer(IBuffer buffer, int id, int noConsume, long noIteration, Test testType){
+    public TimeConsumer(IBuffer buffer, int id, int noConsume, Test testType){
         this.buffer = buffer;
         this.id = id;
         this.noConsume = noConsume;
-        this.noIteration = noIteration;
         this.testType = testType;
 
+        working = true;
+
         switch (testType){
-            case TEST2 -> {
+            case TEST1 -> {
                 generator = new Random(id);
-                working = true;
                 results = new ArrayList<>();
                 noVal = new ArrayList<>();
                 for(int i = 0; i < noConsume + 1; i++) {
@@ -52,6 +52,11 @@ public class TimeConsumer extends Thread implements Person {
                     noVal.add(0);
                 }
             }
+
+            case TEST2 -> {
+                this.elements = 0;
+            }
+
         }
     }
 
@@ -59,16 +64,6 @@ public class TimeConsumer extends Thread implements Person {
     public void run() {
         switch (testType){
             case TEST1 -> {
-                long startTime = System.nanoTime();
-                for(int i = 0; i < noIteration; i++){
-
-                    buffer.consume(this, noConsume);
-                }
-                this.time = System.nanoTime() - startTime;
-                this.cpuTime = cpuMeter.getThreadCpuTime(getId());
-            }
-
-            case TEST2 -> {
                 int val;
                 long elapsed;
                 while(working){
@@ -80,8 +75,18 @@ public class TimeConsumer extends Thread implements Person {
 
                 }
             }
+            case TEST2 -> {
+                while(working){
+                    buffer.consume(this, noConsume);
+                    elements++;
+                }
+            }
         }
 
+    }
+
+    public long getElements() {
+        return elements;
     }
 
     public void stopWorking(){

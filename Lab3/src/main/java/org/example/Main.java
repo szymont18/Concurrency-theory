@@ -17,29 +17,35 @@ public class Main {
         int noConsumer = 10;
         int noProducer = 10;
         int noRound = 10;
-        int timeBetweenRounds = 5000; // milliseconds
+        int timeBetweenRounds = 10000; // milliseconds
 
-        // Consumer 1 is one who has to starve.
+        // Consumer 10 is one who has to starve.
 
         // Choose buffer type:
-        RandomBuffer buffer = new RandomBuffer(100);
-//        StarvationFreeBuffer buffer = new StarvationFreeBuffer(100);
+//        RandomBuffer buffer = new RandomBuffer(100);
+        StarvationFreeBuffer buffer = new StarvationFreeBuffer(100);
 //        ThreeLockBuffer buffer = new ThreeLockBuffer(100);
 
         Consumer[] consumers = new Consumer[noConsumer];
 
         for(int i = 0; i < noConsumer; i++){
-            Consumer consumer = new Consumer(i+1, buffer);
+            Consumer consumer = new Consumer(i+1, buffer, (i + 1) * 1);
             consumers[i] = consumer;
             consumer.start();
         }
-
+        Producer [] producers = new Producer[noProducer];
         for (int i = 0; i < noProducer; i++){
-            Producer producer = new Producer(i + 1, buffer);
+            Producer producer = new Producer(i + 1, buffer, (i + 1) * 1);
             producer.start();
         }
 
         for(int round = 0; round < noRound; round++){
+            try {
+                Thread.sleep(timeBetweenRounds);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             int noConsumed = 0;
             System.out.println("Round " + (round+1));
             for(int i = 0; i < noConsumer; i++){
@@ -49,11 +55,7 @@ public class Main {
             System.out.println("Overall " + noConsumed);
             System.out.println();
 
-            try {
-                Thread.sleep(timeBetweenRounds);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+
         }
 
 //

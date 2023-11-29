@@ -119,10 +119,7 @@ public class BufferHasWaiters implements IBuffer {
 
     }
 
-    @Override
-    public void updateHandledRequest(long time) {
 
-    }
 
     @Override
     public void consume(Person person) {

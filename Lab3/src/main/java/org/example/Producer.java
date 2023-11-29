@@ -1,7 +1,7 @@
 package org.example;
 
 
-import org.example.bin.TimeStamp;
+
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,17 +15,33 @@ public class Producer extends Thread implements Person {
     private final Random random = new Random(Main.seed);
     private final int maxRequest = 50;
 
-    private int noProduced;
-    private ArrayList<TimeStamp> timeStamps;
+    private long noProduced;
+
     private boolean running;
 
+    private Integer request = null;
 
 
     public Producer(int id, IBuffer buffer1){
         this.id = id;
         this.buffer1 = buffer1;
-        timeStamps = new ArrayList<>();
+
         this.threadID = this.getId();
+        this.noProduced = 0L;
+
+    }
+
+    public Integer getRequest() {
+        return request;
+    }
+
+    public Producer(int id, IBuffer buffer1, int request){
+        this.id = id;
+        this.buffer1 = buffer1;
+
+        this.threadID = this.getId();
+        this.request = request;
+        this.noProduced = 0;
 
     }
 
@@ -35,7 +51,16 @@ public class Producer extends Thread implements Person {
         while(running){
             buffer1.produce(this, getRandomInt());
             noProduced++;
+//            try {
+//                Thread.sleep(0, 10);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
         }
+    }
+
+    public long getNoProduced() {
+        return noProduced;
     }
 
     @Override
@@ -45,14 +70,15 @@ public class Producer extends Thread implements Person {
 
     @Override
     public int getRandomInt() {
+        if (request != null) return request;
 
         return this.random.nextInt(maxRequest) + 1;
 
     }
 
-    public void updateTime(long time){
-        timeStamps.add(new TimeStamp(time, this.noProduced));
-    }
+//    public void updateTime(long time){
+//        timeStamps.add(new TimeStamp(time, this.noProduced));
+//    }
 
     public void stopRunning(){
         running=false;

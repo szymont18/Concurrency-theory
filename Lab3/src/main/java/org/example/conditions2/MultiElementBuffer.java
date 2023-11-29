@@ -98,9 +98,6 @@ public class MultiElementBuffer implements IBuffer {
 
     }
 
-    @Override
-    public void updateHandledRequest(long time) {
 
-    }
 
 }

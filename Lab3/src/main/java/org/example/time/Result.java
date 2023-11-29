@@ -3,28 +3,31 @@ package org.example.time;
 
 public class Result {
 
-    private int elements;
-    private double time = -1;
-    private long timeL = -1;
+    private long x;
+    private double y = -1;
+    private long yL = -1;
     private String type;
 
-    public Result(int elements, long timeL, String type) {
-        this.elements = elements;
-        this.timeL = timeL;
+    public Result(long x, long yL, String type) {
+        this.x = x;
+        this.yL = yL;
         this.type = type;
     }
 
-    public Result(int elements, double time, String type) {
-        this.elements = elements;
-        this.time = time;
+    public Result(long x, double y, String type) {
+        this.x = x;
+        this.y = y;
         this.type = type;
     }
+
+
+
 
     @Override
     public String toString() {
-        if (time > 0)return elements+";"+time+";"+type;
+        if (y > 0)return x +";"+ y +";"+type;
 
-        return elements+";"+timeL+";"+type;
+        return x +";"+ yL +";"+type;
 
 
     }

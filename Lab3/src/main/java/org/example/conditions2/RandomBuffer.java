@@ -4,7 +4,6 @@ import org.example.Consumer;
 import org.example.IBuffer;
 import org.example.Person;
 import org.example.Producer;
-import org.example.bin.TimeStamp;
 
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
@@ -93,7 +92,7 @@ public class RandomBuffer implements IBuffer {
     private final Condition producerCondition;
 
     private int handledRequest;
-    private ArrayList<TimeStamp> handledRequestArray;
+
 
     public RandomBuffer(int maxBuffer){
         this.buffer = 0;
@@ -103,7 +102,7 @@ public class RandomBuffer implements IBuffer {
         this.consumerCondition = lock.newCondition();
         this.producerCondition = lock.newCondition();
 
-        handledRequestArray = new ArrayList<TimeStamp>();
+
         handledRequest = 0;
     }
 
@@ -157,17 +156,11 @@ public class RandomBuffer implements IBuffer {
         }
     }
 
-    public void updateHandledRequest(long time) {
-        handledRequestArray.add(new TimeStamp((float) time / 1000000000L, this.handledRequest));
-    }
 
-    public ArrayList<TimeStamp> getHandledRequestArray(){
-        return handledRequestArray;
-    }
 
     public void resetHandledRequest(){
         handledRequest = 0;
-        handledRequestArray.clear();
+
     }
 
     @Override
