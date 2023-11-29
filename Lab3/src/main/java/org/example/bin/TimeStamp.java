@@ -1,4 +1,4 @@
-package org.example.time;
+package org.example.bin;
 
 public class TimeStamp {
 

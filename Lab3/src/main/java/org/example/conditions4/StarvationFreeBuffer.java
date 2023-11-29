@@ -4,7 +4,7 @@ import org.example.Consumer;
 import org.example.IBuffer;
 import org.example.Person;
 import org.example.Producer;
-import org.example.time.TimeStamp;
+import org.example.bin.TimeStamp;
 
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
@@ -83,7 +83,6 @@ public class StarvationFreeBuffer implements IBuffer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            handledRequest++;
             this.lock.unlock();
         }
     }
@@ -118,7 +117,6 @@ public class StarvationFreeBuffer implements IBuffer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            handledRequest++;
             this.lock.unlock();
         }
 
@@ -149,5 +147,10 @@ public class StarvationFreeBuffer implements IBuffer {
     @Override
     public void produce(Person person) {
 
+    }
+
+    @Override
+    public String toString() {
+        return "Four Condition";
     }
 }

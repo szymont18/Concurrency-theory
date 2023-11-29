@@ -1,7 +1,7 @@
 package org.example;
 
 
-import org.example.time.TimeStamp;
+import org.example.bin.TimeStamp;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,7 +13,7 @@ public class Producer extends Thread implements Person {
 
 
     private final Random random = new Random(Main.seed);
-    private final int maxRequest = 25;
+    private final int maxRequest = 50;
 
     private int noProduced;
     private ArrayList<TimeStamp> timeStamps;

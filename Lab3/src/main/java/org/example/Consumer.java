@@ -1,7 +1,7 @@
 package org.example;
 
 
-import org.example.time.TimeStamp;
+import org.example.bin.TimeStamp;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,7 +16,7 @@ public class Consumer extends Thread implements Person {
 
     private ArrayList<TimeStamp> timeStamps;
 
-    private final int maxRequest = 25;
+    private final int maxRequest = 50;
     private boolean running;
 
     public Consumer(int id, IBuffer buffer1){
@@ -44,7 +44,9 @@ public class Consumer extends Thread implements Person {
 
     @Override
     public int getRandomInt() {
-
+        if (id == 1){
+            return maxRequest;
+        }
         return this.random.nextInt(maxRequest) + 1;
 
     }

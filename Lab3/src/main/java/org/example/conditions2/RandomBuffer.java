@@ -4,12 +4,10 @@ import org.example.Consumer;
 import org.example.IBuffer;
 import org.example.Person;
 import org.example.Producer;
-import org.example.time.TimeStamp;
+import org.example.bin.TimeStamp;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -121,18 +119,12 @@ public class RandomBuffer implements IBuffer {
         try {
             this.lock.lock();
 
-            while (buffer  < request) {
+            while (buffer < request) {
                 this.consumerCondition.await();
             }
 
-//            System.out.println(person.introduceYourself() + " start consuming " + request);
 
             buffer -= request;
-//            Thread.sleep(0L, 500);
-
-//            System.out.println(person.introduceYourself() + " consumed " + request);
-
-//            printBufferState();
 
             this.producerCondition.signal();
 
@@ -140,7 +132,6 @@ public class RandomBuffer implements IBuffer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            handledRequest++;
             this.lock.unlock();
         }
     }
@@ -153,22 +144,15 @@ public class RandomBuffer implements IBuffer {
                 this.producerCondition.await();
             }
 
-//            System.out.println(person.introduceYourself() + " start producing " + request);
-
 
             buffer += request;
-//            Thread.sleep(0L, 500);
 
-//            System.out.println(person.introduceYourself() + " produced " + request);
-
-//            printBufferState();
 
             this.consumerCondition.signal();
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }finally {
-            handledRequest++;
             this.lock.unlock();
         }
     }
@@ -194,5 +178,10 @@ public class RandomBuffer implements IBuffer {
     @Override
     public void produce(Person person) {
 
+    }
+
+    @Override
+    public String toString() {
+        return "TwoConditions";
     }
 }

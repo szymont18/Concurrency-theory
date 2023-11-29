@@ -4,7 +4,7 @@ import org.example.Consumer;
 import org.example.IBuffer;
 import org.example.Person;
 import org.example.Producer;
-import org.example.time.TimeStamp;
+import org.example.bin.TimeStamp;
 
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
@@ -53,11 +53,6 @@ public class ThreeLockBuffer implements IBuffer {
             }
 
             buffer -= request;
-            handledRequest++;
-
-//            Thread.sleep(0L, 100);
-
-//            System.out.println(person.introduceYourself() + " consumed " + request);
 
             this.waiting.signal();
 
@@ -83,10 +78,7 @@ public class ThreeLockBuffer implements IBuffer {
             }
 
             buffer += request;
-            handledRequest++;
-//            Thread.sleep(0L, 100);
 
-//            System.out.println(person.introduceYourself() + " produced " + request);
 
             this.waiting.signal();
 
@@ -124,8 +116,10 @@ public class ThreeLockBuffer implements IBuffer {
 
     }
 
-
-
+    @Override
+    public String toString() {
+        return "ThreeLock";
+    }
 }
 
 

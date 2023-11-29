@@ -1,8 +1,9 @@
-package org.example.time;
+package org.example.bin;
 
 import org.example.Consumer;
 import org.example.IBuffer;
 import org.example.Producer;
+import org.example.bin.TimeStamp;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
