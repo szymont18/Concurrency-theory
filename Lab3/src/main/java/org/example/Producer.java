@@ -52,7 +52,7 @@ public class Producer extends Thread implements Person {
             buffer1.produce(this, getRandomInt());
             noProduced++;
 //            try {
-//                Thread.sleep(0, 10);
+//                Thread.sleep(0, 1);
 //            } catch (InterruptedException e) {
 //                throw new RuntimeException(e);
 //            }
@@ -76,9 +76,6 @@ public class Producer extends Thread implements Person {
 
     }
 
-//    public void updateTime(long time){
-//        timeStamps.add(new TimeStamp(time, this.noProduced));
-//    }
 
     public void stopRunning(){
         running=false;

@@ -44,7 +44,7 @@ public class Consumer extends Thread implements Person {
             buffer1.consume(this, getRandomInt());
             noConsumed++;
 //            try {
-//                Thread.sleep(0, 10);
+//                Thread.sleep(0, 1);
 //            } catch (InterruptedException e) {
 //                throw new RuntimeException(e);
 //            }
@@ -69,9 +69,7 @@ public class Consumer extends Thread implements Person {
         return noConsumed;
     }
 
-//    public void updateTime(long time){
-//        timeStamps.add(new TimeStamp((float) time / 1000000000, this.noConsumed));
-//    }
+
 
     public void stopRunning(){
         running=false;
