@@ -44,10 +44,6 @@ public class TimeProducer extends Thread implements Person {
                 }
             }
 
-            case TEST2 -> {
-                elements = 0;
-            }
-
         }
 
     }
@@ -77,14 +73,6 @@ public class TimeProducer extends Thread implements Person {
 
                 }
             }
-
-            case TEST2 -> {
-                while(working){
-                    buffer.produce(this, noProduce);
-                    elements++;
-                }
-            }
-
         }
     }
 

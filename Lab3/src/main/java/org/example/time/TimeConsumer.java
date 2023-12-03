@@ -53,10 +53,6 @@ public class TimeConsumer extends Thread implements Person {
                 }
             }
 
-            case TEST2 -> {
-                this.elements = 0;
-            }
-
         }
     }
 
@@ -73,12 +69,6 @@ public class TimeConsumer extends Thread implements Person {
                     results.set(val, results.get(val) + System.nanoTime() - elapsed);
                     noVal.set(val, noVal.get(val) + 1);
 
-                }
-            }
-            case TEST2 -> {
-                while(working){
-                    buffer.consume(this, noConsume);
-                    elements++;
                 }
             }
         }
