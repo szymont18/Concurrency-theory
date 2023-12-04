@@ -26,8 +26,8 @@ public class MainTime {
             starts. When they have finally produced/consumed the clock shuts down. The results are written to result Array
             on the index of produced/consumed elements. Finally, the mean time in buffer is returning for every number of request.
          */
-
-//        long testTime = 180000L;
+//
+//        long testTime = 300000L;
 //        int maxBuffer = 100;
 //        int noPerson = 10;
 //        int maxRequest = 50;
@@ -113,10 +113,10 @@ public class MainTime {
 //         */
 //
         int noPerson = 10;
-        int noRound = 1;
-        long timeBetweenRounds = 180000; // milliseconds
+        int noRound = 10;
+        long timeBetweenRounds = 30000; // milliseconds
         int maxBuffer = 100;
-        int maxRequest = 50;
+        int maxRequest = 10;
 
         int requestStep = maxRequest / noPerson;
         String extension = ".csv";
