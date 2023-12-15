@@ -16,13 +16,11 @@ import java.util.concurrent.locks.ReentrantLock;
 public class StarvationFreeBuffer implements IBuffer {
     private int buffer;
     private final int maxBuffer;
-
     private final ReentrantLock lock;
     private final Condition otherConsumerCondition;
     private final Condition firstConsumerCondition;
     private final Condition otherProducerCondition;
     private final Condition firstProducerCondition;
-
     boolean waitingProducer;
     boolean waitingConsumer;
     private int handledRequest;
@@ -129,3 +127,4 @@ public class StarvationFreeBuffer implements IBuffer {
         return "Four Condition";
     }
 }
+
