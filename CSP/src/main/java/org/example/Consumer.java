@@ -1,28 +1,65 @@
 package org.example;
 
-import org.jcsp.lang.Any2AnyChannelInt;
-import org.jcsp.lang.Any2OneChannelInt;
-import org.jcsp.lang.CSProcess;
-import org.jcsp.lang.One2OneChannelInt;
+import org.jcsp.lang.*;
+
+import java.util.Random;
 
 public class Consumer implements CSProcess {
-    private final One2OneChannelInt channel;
-//    private final Any2AnyChannelInt channel2;
-    public Consumer (One2OneChannelInt in) {
-        channel = in;
-//        channel2 = null;
+    static int maxRequest;
+
+    private final One2OneChannelInt[] buffers;
+    private int eatenElements;
+
+
+    public Consumer (One2OneChannelInt[] buffers) {
+        this.buffers = buffers;
+        eatenElements = 0;
+
+    }
+//    private Guard[] fillGuards(One2OneChannelInt[] buffers){
+//        Guard[] guards = new Guard[buffers.length];
+//        int i = 0;
+//        for(One2OneChannelInt buffer : buffers){
+//            guards[i] = (Guard) buffer;
+//            i++;
+//        }
+//        return guards;
+//    }
+    private void introduce(){
+        System.out.println("Consumer eats " + this.eatenElements);
+    }
+    public void run () {
+//        System.out.println("Consumer start working");
+
+        Random random = new Random();
+        int index, request;
+
+        while(true) {
+            // Select Bufer
+            index = random.nextInt(this.buffers.length);
+            request = random.nextInt(Consumer.maxRequest) + 1;
+
+            // Send request for buffer
+            this.buffers[index].out().write(1);
+
+
+            // Buffer does not send anything
+            while (this.buffers[index].in().read() == 0){
+                // Resend request
+                index = random.nextInt(this.buffers.length);
+                this.buffers[index].out().write(request);
+
+            }
+
+            this.buffers[index].out().write(request); // Send how much do you want
+            int item = this.buffers[index].in().read(); // Get what you want
+
+            eatenElements++;
+
+        }
     }
 
-//    public Consumer(Any2AnyChannelInt in){
-//        channel2 = in;
-//        channel = null;
-//    }
-
-    public void run () {
-        int item;
-        item = channel.in().read();
-//        else item = channel2.in().read();
-        System.out.println("Consuming " + item);
-
+    public int getEatenElements() {
+        return eatenElements;
     }
 }

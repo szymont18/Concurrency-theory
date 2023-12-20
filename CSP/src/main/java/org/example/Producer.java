@@ -4,27 +4,43 @@ import org.jcsp.lang.Any2AnyChannelInt;
 import org.jcsp.lang.CSProcess;
 import org.jcsp.lang.One2OneChannelInt;
 
+import java.util.Random;
+
 public class Producer implements CSProcess {
+    static int maxRequest;
+
+    final private One2OneChannelInt[] buffers;
 
 
-    final private One2OneChannelInt channel;
-//    final private Any2AnyChannelInt channel2;
+    public Producer(One2OneChannelInt[] buffers) {
+        this.buffers = buffers;
 
-    public Producer(One2OneChannelInt channel) {
-        this.channel = channel;
-//        channel2 = null;
     }
 
-//    public Producer(Any2AnyChannelInt channel) {
-//        this.channel = null;
-//        this.channel2 = channel;
-//    }
-
     public void run(){
-        int item = (int) (Math.random() * 100) + 1;
-        System.out.println("Sending " + item);
-        if (channel != null) channel.out().write(item);
-//        else channel2.out().write(item);
+//        System.out.println("Producer start working");
+
+        Random random = new Random();
+        int index, item;
+        while(true) {
+            // Produce elements
+            item = random.nextInt(Producer.maxRequest) + 1;
+
+            // Select Bufer
+            index = random.nextInt(this.buffers.length);
+
+            this.buffers[index].out().write(0); // Send Request
+
+            while (this.buffers[index].in().read() == 0){
+                index = random.nextInt(this.buffers.length);
+                this.buffers[index].out().write(0); // Send Request
+            }
+
+            // Request Accepted
+            this.buffers[index].out().write(item);
+
+        }
+
     }
 
 }
