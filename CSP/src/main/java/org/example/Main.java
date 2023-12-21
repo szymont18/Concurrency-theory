@@ -4,36 +4,6 @@ import org.jcsp.lang.*;
 
 public class Main {
     public static void main(String[] args) {
-
-        // One Consumer, One Producer
-//        System.out.println("Start system");
-//        One2OneChannelInt channel = Channel.one2oneInt();
-//
-//        CSProcess[] process = {new Consumer(channel), new Producer(channel)};
-//
-//        Parallel program = new Parallel(process);
-//        program.run();
-        /*
-        Bufor możę czekać zarówno na Konsumentów (requesty) jak i Producentów ( elementy, które wytworzą ).
-        Trzeba zrobić, żeby było więcej Konsumentów i Producentów. Do tego trzeba użyć alternatyw dla Producentów i
-        Konsumentów.
-         */
-//         Many Consumers, Many Producers
-//        Any2AnyChannelInt channel = Channel.any2anyInt();
-//        CSProcess[] processMany = {new Consumer(channel), new Consumer(channel), new Consumer(channel),
-//                                    new Consumer(channel), new Consumer(channel), new Consumer(channel),
-//                                    new Producer(channel), new Producer(channel), new Producer(channel),
-//                                    new Producer(channel), new Producer(channel), new Producer(channel)};
-//        Parallel programMany = new Parallel(processMany);
-//        programMany.run();
-
-        /*
-        Bufor rozproszony pojedyczny (pojedyncza cześć). Wielu konsumentów i producentów.
-        Na następny raz to musi chodzić. Wymyślić test, i parametry. Z przygotowania: semantyka CSP, czym jest
-        alternatywa itd. W zadaniu na UPeLu napisane co trzeba robić. I trzeba load-balancing. Wady i zalety. To, że działa, to
-        też zaleta. Do czego to się nadaję ? Można wykorzystać: Time-out'y.
-         */
-
         /*
         Idea:
             Bufor posiada dwa stany: Stan zapełnienia i sprzedawania
@@ -45,9 +15,10 @@ public class Main {
          */
 
         // Parameters
-        int noProducers = 3;
-        int noConsumers = 3;
-        int noBuffers = 3;
+        int noProducers = 6;
+        int noConsumers = 6;
+        int noBuffers = 12;
+        long time = 100000L;
 
         Buffer.maxBuffer = 6;
         Producer.maxRequest = 3;
@@ -106,7 +77,7 @@ public class Main {
         }
 
         CSProcess[] process = new CSProcess[noBuffers + noConsumers + noProducers];
-        DataCollector dc = new DataCollector(buffers, 10000L);
+        DataCollector dc = new DataCollector(buffers, consumers, time);
 
         int index = 0;
 
@@ -128,10 +99,6 @@ public class Main {
 
         Parallel program = new Parallel(process);
         program.run();
-
-
-
-
 
     }
 }

@@ -32,6 +32,12 @@ public class Producer implements CSProcess {
             this.buffers[index].out().write(0); // Send Request
 
             while (this.buffers[index].in().read() == 0){
+//                try {
+//                    Thread.sleep(1);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+
                 index = random.nextInt(this.buffers.length);
                 this.buffers[index].out().write(0); // Send Request
             }

@@ -9,11 +9,12 @@ public class Consumer implements CSProcess {
 
     private final One2OneChannelInt[] buffers;
     private int eatenElements;
-
+    private int jumps;
 
     public Consumer (One2OneChannelInt[] buffers) {
         this.buffers = buffers;
         eatenElements = 0;
+        jumps = 0;
 
     }
 //    private Guard[] fillGuards(One2OneChannelInt[] buffers){
@@ -46,6 +47,12 @@ public class Consumer implements CSProcess {
             // Buffer does not send anything
             while (this.buffers[index].in().read() == 0){
                 // Resend request
+//                try {
+//                    Thread.sleep(1);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+                jumps++;
                 index = random.nextInt(this.buffers.length);
                 this.buffers[index].out().write(request);
 
@@ -57,6 +64,10 @@ public class Consumer implements CSProcess {
             eatenElements++;
 
         }
+    }
+
+    public int getJumps() {
+        return jumps;
     }
 
     public int getEatenElements() {
